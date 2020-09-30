@@ -15,11 +15,8 @@
 
 
 init(Req0, State) ->
-  {ok, Body} =
-    httpc:request(get, {"http://www.erlang.org", []}, [], [{sync, false}]),
-  Req = cowboy_req:reply(200,
-
-    #{<<"content-type">> => <<"text/plain">>},
-    <<Body>>,
-    Req0),
-  {ok, Req, State}.
+    Req = cowboy_req:reply(200,
+        #{<<"content-type">> => <<"text/plain">>},
+        <<"Hello Erlang!">>,
+        Req0),
+    {ok, Req, State}.
