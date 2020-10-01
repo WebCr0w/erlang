@@ -15,8 +15,24 @@
 
 
 init(Req0, State) ->
-    Req = cowboy_req:reply(200,
-        #{<<"content-type">> => <<"text/plain">>},
-        <<"Hello Erlang!">>,
-        Req0),
-    {ok, Req, State}.
+  inets:start(),
+  ssl:start(),
+  Url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5",
+  AcceptHeader = {"Accept", "application/json"},
+  {ok, {{Version, 200, ReasonPhrase}, Headers, Body}} = httpc:request(get, {Url, [AcceptHeader]}, [], []), io:format("~s", [Body]),
+
+
+  X2 = jsx:decode(<<Body>>, []),
+  X1 = jsx:is_json(X2),
+
+  if
+    X1 == true -> X = "true" ;
+    true ->
+      X = "false"
+  end,
+
+  Req = cowboy_req:reply(200,
+    #{<<"content-type">> => <<"text/plain">>},
+    X2,
+    Req0),
+  {ok, Req, State}.
