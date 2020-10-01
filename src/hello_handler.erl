@@ -18,8 +18,7 @@ init(Req0, State) ->
   inets:start(),
   ssl:start(),
   Url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5",
-  AcceptHeader = {"Accept", "application/json"},
-  {ok, {{Version, 200, ReasonPhrase}, Headers, Body}} = httpc:request(get, {Url, [AcceptHeader]}, [], []), io:format("~s", [Body]),
+  {ok, {{Version, 200, ReasonPhrase}, Headers, Body}} = httpc:request(get, {Url,[]}, [], []), io:format("~s", [Body]),
 
 
   X2 = jsx:decode(<<Body>>, []),
@@ -33,6 +32,6 @@ init(Req0, State) ->
 
   Req = cowboy_req:reply(200,
     #{<<"content-type">> => <<"text/plain">>},
-    X2,
+    X,
     Req0),
   {ok, Req, State}.
